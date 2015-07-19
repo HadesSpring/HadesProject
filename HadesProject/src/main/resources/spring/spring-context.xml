@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.0.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+
+
+	<!-- 启用spring mvc 注解 -->
+	<!-- <context:annotation-config /> -->
+	<!-- 如果有多个 DispatcherServlet 请把关于数据库和server部分的bean在web.xml中使用spring 的 listener加载 -->
+
+	<!-- 引入数据库属性文件 -->
+	<context:property-placeholder location="classpath*:jdbc.properties" />
+	<!--c3p0数据库连接池 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="${driverClassName}" />
+		<property name="jdbcUrl" value="${jdbc_url}" />
+		<property name="user" value="${jdbc_username}" />
+		<property name="password" value="${jdbc_password}" />
+		<property name="initialPoolSize" value="1" />
+		<property name="minPoolSize" value="0" />
+		<property name="maxPoolSize" value="50" />
+		<property name="acquireIncrement" value="5" />
+		<property name="maxIdleTime" value="10" />
+		<property name="maxStatements" value="0" />
+	</bean>
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="hibernateProperties">
+			<props>
+				<!-- <prop key="current_session_context_class">thread</prop>  -->
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hiberante.format_sql">true</prop>
+				<!-- 延迟加载 -->
+				<prop key="hibernate.cglib.use_reflection_optimizer">true</prop>
+				<!--是否允许Hibernate用JDBC的可滚动的结果集,对分页时的设置非常有帮助 -->
+				<prop key="hibernate.jdbc.use_scrollable_resultset">false</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+		<property name="packagesToScan">
+			<list>
+				<value>com.hades.user.db</value>
+			</list>
+		</property>
+
+    <!-- 
+	<property name="mappingResources">
+		<list>
+			<value>com/ssh/entity/Emp.hbm.xml</value>
+			<value>com/ssh/entity/Dept.hbm.xml</value>
+		</list>  
+	</property> 
+	 -->
+	</bean>
+
+
+
+	<!-- hibernate事物开始 -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+
+
+	<!--声明性事物  全局公用   -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+	<tx:attributes>
+		<tx:method name="store*" propagation="REQUIRED" />
+		<tx:method name="add*" propagation="REQUIRED" />
+		<tx:method name="save*" propagation="REQUIRED" />
+		<tx:method name="update*" propagation="REQUIRED" />
+		<tx:method name="delete*" propagation="REQUIRED" />
+	</tx:attributes>
+   </tx:advice>
+	<!-- <aop:config>
+		<aop:pointcut id="allServiceMethod"
+			expression="execution(* com.hades.user.service.impl.*.*(..))" />
+		<aop:advisor pointcut-ref="allServiceMethod" advice-ref="txAdvice" />
+	</aop:config>  -->
+	<!-- hibernate事物结束 -->
+
+
+	<!-- 资源文件绑定器 -->
+	<!-- 国际化 -->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>i18n/messages</value>
+			</list>
+		</property>
+		<property name="useCodeAsDefaultMessage" value="true" />
+	</bean>
+	<!-- 国际化 end -->
+
+
+
+	<!-- 自定义exception处理 -->
+	<!--<bean id="simpleMappingExceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver"></bean> -->
+	<!-- <bean id="exceptionResolver" class="com.springdemo.core.CommonExceptionHandler"/> -->
+
+	<!-- 全局异常配置 start -->
+	<bean id="simpleMappingExceptionResolver"
+		class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<prop key="java.lang.Exception">error/error</prop>
+				<prop key="java.lang.Throwable">error/error</prop>
+			</props>
+		</property>
+		<property name="statusCodes">
+			<props>
+				<prop key="errors/error">500</prop>
+				<prop key="errors/404">404</prop>
+			</props>
+		</property>
+
+		<!-- 默认错误页面，当找不到上面mappings中指定的异常对应视图时，使用本默认配置 -->
+		<property name="defaultErrorView" value="error/error"></property>
+		<!-- 默认HTTP状态码 -->
+		<property name="defaultStatusCode" value="500"></property>
+	</bean>
+	<!-- 全局异常配置 end -->
+
+
+	<!-- 导入bean文件 -->
+	<import resource="classpath:/spring/spring-user.xml" />
+
+</beans>
+	
+
+
+
+
+
+
+
+
+
+
+

@@ -3,7 +3,7 @@
   type="WEB"
   name="HadesProject"
   id="myeclipse.1437058807990"
-  context-root="/Project"
+  context-root="/spring-ssh"
   j2ee-spec="6.0"
   archive="HadesProject.war">
   <attributes>
