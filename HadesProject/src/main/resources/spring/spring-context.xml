@@ -146,8 +146,20 @@
 	<!-- 全局异常配置 end -->
 
 
-	<!-- 导入bean文件 -->
-	<import resource="classpath:/spring/spring-user.xml" />
+	<!-- ********************************* 以下是 导入bean文件  *********************************  -->
+	<!-- 用户管理  -->
+	<import resource="classpath:/spring/user/spring-user.xml" />
+	<!-- 档案管理 -->
+	<import resource="classpath:/spring/records/spring-accounts.xml" /><!-- 账户信息  -->
+	<import resource="classpath:/spring/records/spring-customer.xml" /><!--  客户信息  -->
+	<import resource="classpath:/spring/records/spring-department.xml" /><!--  部门信息  -->
+	<import resource="classpath:/spring/records/spring-employee.xml" /><!-- 员工信息  -->
+	<import resource="classpath:/spring/records/spring-otherrecords.xml" /><!-- 其他档案设置  -->
+	<import resource="classpath:/spring/records/spring-product.xml" /><!--  商品信息  -->
+	<import resource="classpath:/spring/records/spring-promosale.xml" /><!-- 零售促销设置  -->
+	<import resource="classpath:/spring/records/spring-records.xml" /><!-- 档案管理  -->
+	<import resource="classpath:/spring/records/spring-supplier.xml" /><!-- 供应商信息   -->
+	<import resource="classpath:/spring/records/spring-vip.xml" /><!-- 会员信息  -->
 
 </beans>
 	
