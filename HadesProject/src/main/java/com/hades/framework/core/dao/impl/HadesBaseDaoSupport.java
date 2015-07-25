@@ -28,6 +28,9 @@ import com.hades.framework.core.model.Page;
 /**
  * 
  * HadesProject
+ * 所有底层持久化操作必须继承此类, 
+ * 通过此类的方法进行持久化, 
+ * 为后续替换持久层做准备
  * 
  * @author 李先瞧 2015-7-23 数据操作接口公共实现类支持
  * @param <T>
