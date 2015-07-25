@@ -25,13 +25,13 @@ public class User implements Serializable{
 	/**
 	 * 用户名
 	 */
-	@Column(name="userName",length=32)
+	@Column(name="userName",length=32 , unique = true,nullable = false)
 	private String userName;
 	
 	/**
 	 * 密码
 	 */
-	@Column(name="userPwd",length=32)
+	@Column(name="userPwd",length=32,nullable = true)
 	private String userPwd;
 	
 	

@@ -1,41 +1,42 @@
 package com.hades.user.dao.impl;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
+import com.hades.framework.core.dao.impl.HadesBaseDaoSupport;
 import com.hades.user.dao.IUserDao;
+import com.hades.user.db.User;
 
-public class UserDaoImpl implements IUserDao {
+public class UserDaoImpl extends HadesBaseDaoSupport<User,Long> implements IUserDao {
 
 	private static Logger logger = Logger.getLogger(UserDaoImpl.class);
-	private SessionFactory sessionFactory;
 	
 	
 	
 	@Override
-	public boolean login(String userName, String userPwd) {
-		        String hsql="from user";
-		        Session session = sessionFactory.getCurrentSession();
-		        Query query = session.createQuery(hsql);
-		        logger.info(query.list().size()+"-----------=============-----------------================");
-		        System.out.println("from user");
+	public boolean save(String userName, String userPwd) {
+		        User user = new User();
+		        user.setUserName("小李"+Math.random()*5);
+		        user.setUserPwd("aaaa");
+		        Long id = this.save(user);
+		        logger.info("from user"+id);
 		return false;
 	}
 
 
 
-	public SessionFactory getSessionFactory() {
-		return sessionFactory;
+	@Override
+	public List<User> queryAllUser() {
+		// TODO Auto-generated method stub
+		List<User> list =  this.queryAll(User.class);
+		   logger.info("from user"+list.size());
+		return list;
 	}
 
 
 
-	public void setSessionFactory(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
-	
+
 	
 
 	

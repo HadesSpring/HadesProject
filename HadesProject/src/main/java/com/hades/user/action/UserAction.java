@@ -23,7 +23,8 @@ public class UserAction extends ActionSupport {
 	private IUserService userService;
 	public String login(){
 		logger.info("登陆成功!");
-		userService.login("1", "2");
+		userService.save("1", "2");
+		userService.queryAllUser();
 		return SUCCESS;
 	}
 	public IUserService getUserService() {

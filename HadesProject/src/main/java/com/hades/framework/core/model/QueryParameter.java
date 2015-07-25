@@ -23,7 +23,13 @@ public class QueryParameter {
 	public static final String ASC = "asc";
 	public static final String DESC = "desc";
 
+	/**
+	 * 当前页的页号,序号从1开始,默认为1.
+	 */
 	protected int pageNo = 1;
+	/**
+	 * 每页的记录数,无默认值.
+	 */
 	protected int pageSize = -1;
 	protected String orderBy = null;
 	protected String order = ASC;

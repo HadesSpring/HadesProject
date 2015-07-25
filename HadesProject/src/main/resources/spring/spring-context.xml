@@ -11,12 +11,16 @@
         http://www.springframework.org/schema/aop
         http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
         http://www.springframework.org/schema/tx
-        http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
-
+        http://www.springframework.org/schema/tx/spring-tx-4.0.xsd"
+        default-autowire="byName">
+        
+     <!-- **************************  注解与配置文件方式均支持     **************************  -->
+     <!-- **************************  但强烈建议采用xml配置方式管理  ************************** -->
 
 
 	<!-- 启用spring mvc 注解 -->
-	<!-- <context:annotation-config /> -->
+	 <context:annotation-config /> 
+	 <context:component-scan base-package="com.hades.*"></context:component-scan> 
 	<!-- 如果有多个 DispatcherServlet 请把关于数据库和server部分的bean在web.xml中使用spring 的 listener加载 -->
 
 	<!-- 引入数据库属性文件 -->
@@ -56,7 +60,7 @@
 		</property>
 		<property name="packagesToScan">
 			<list>
-				<value>com.hades.user.db</value>
+				<value>com.hades.*</value>
 			</list>
 		</property>
 

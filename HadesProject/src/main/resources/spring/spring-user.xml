@@ -14,7 +14,6 @@
         http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
 
 	<bean id="userDao" class="com.hades.user.dao.impl.UserDaoImpl">
-		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
 	<bean id="userService" class="com.hades.user.service.impl.UserServiceImpl">
 		<property name="userDao" ref="userDao"></property>
@@ -37,8 +36,8 @@
 		</tx:attributes>
 	</tx:advice>
 	<aop:config>
-		<aop:pointcut id="allServiceMethod"
+		<aop:pointcut id="userServiceMethod"
 			expression="execution(* com.hades.user.service.impl.*.*(..))" />
-		<aop:advisor pointcut-ref="allServiceMethod" advice-ref="txUser" />
+		<aop:advisor pointcut-ref="userServiceMethod" advice-ref="txUser" />
 	</aop:config>
 </beans>

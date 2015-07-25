@@ -7,6 +7,7 @@
 package com.hades.framework.core.dao.impl;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -15,6 +16,8 @@ import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
 import org.springframework.web.context.WebApplicationContext;
@@ -30,30 +33,40 @@ import com.hades.framework.core.model.Page;
  * @param <T>
  *            实体
  */
-public class HadesBaseDaoSupport<T, ID extends Serializable> extends HibernateDaoSupport implements IHadesBaseDao<T, Serializable>{
+public class HadesBaseDaoSupport<T, ID extends Serializable> extends
+		HibernateDaoSupport implements IHadesBaseDao<T, Serializable> {
 
-	private static final Logger logger = Logger.getLogger(HadesBaseDaoSupport.class);
+	private static final Logger logger = Logger
+			.getLogger(HadesBaseDaoSupport.class);
+
+	@Autowired   
+    public void setSessionFactoryOverride(SessionFactory sessionFactory)    
+    {    
+        super.setSessionFactory(sessionFactory);    
+    }
 
 	/**
-	 * 保存指定实体类
+	 * * 李先瞧 2015-7-25 保存指定实体类
 	 * 
 	 * @param entityobj
 	 *            实体类
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public void save(T entity) {
-		getHibernateTemplate().save(entity);
+	public ID save(final T entity) {
+		ID id = (ID) getHibernateTemplate().save(entity);
 		logger.debug("保存实体类成功," + entity.getClass().getName());
+		return id;
 	}
 
 	/**
-	 * 删除指定实体
+	 * * 李先瞧 2015-7-25 删除指定实体
 	 * 
 	 * @param entityobj
 	 *            实体类
 	 */
 	@Override
-	public void delete(T entity) {
+	public void delete(final T entity) {
 		try {
 			getHibernateTemplate().delete(entity);
 			logger.debug("删除实体类成功," + entity.getClass().getName());
@@ -64,7 +77,7 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends HibernateDa
 	}
 
 	/**
-	 * 获取所有实体集合
+	 * * 李先瞧 2015-7-25 获取所有实体集合
 	 * 
 	 * @param entityClass
 	 *            实体
@@ -72,7 +85,7 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends HibernateDa
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<T> findAll(Class<T> entityClass) {
+	public List<T> queryAll(final Class<T> entityClass) {
 		try {
 			logger.debug("开始删除实体：" + entityClass.getName());
 			return (List<T>) getHibernateTemplate().find(
@@ -84,13 +97,13 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends HibernateDa
 	}
 
 	/**
-	 * 更新或保存指定实体
+	 * * 李先瞧 2015-7-25 更新或保存指定实体
 	 * 
 	 * @param entity
 	 *            实体类
 	 */
 	@Override
-	public void saveOrUpdate(T entity) {
+	public void saveOrUpdate(final T entity) {
 		try {
 			getHibernateTemplate().saveOrUpdate(entity);
 			logger.debug("更新或者保存实体成功," + entity.getClass().getName());
@@ -100,10 +113,8 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends HibernateDa
 		}
 	}
 
-
-
 	/**
-	 * 查询指定HQL，并返回集合
+	 * * 李先瞧 2015-7-25 查询指定HQL，并返回集合
 	 * 
 	 * @param hql
 	 *            HQL语句
@@ -113,7 +124,7 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends HibernateDa
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Object> find(String hql, Object... values) {
+	public List<Object> query(final String hql, final Object... values) {
 		try {
 			logger.debug("开始查询指定HQL语句," + hql);
 			return (List<Object>) getHibernateTemplate().find(hql, values);
@@ -124,7 +135,7 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends HibernateDa
 	}
 
 	/**
-	 * 按照HQL语句查询唯一对象.
+	 * * 李先瞧 2015-7-25 按照HQL语句查询唯一对象.
 	 * 
 	 * @param hql
 	 *            HQL语句
@@ -134,7 +145,7 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends HibernateDa
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public Object findUnique(final String hql, final Object... values) {
+	public Object queryUnique(final String hql, final Object... values) {
 		try {
 			logger.debug("开始查询返回唯一结果的HQL语句," + hql);
 			return getHibernateTemplate().execute(new HibernateCallback() {
@@ -150,7 +161,9 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends HibernateDa
 		}
 	}
 
-	/** 统计指定类的所有持久化对象 */
+	/**
+	 * * 李先瞧 2015-7-25 统计指定类的所有持久化对象
+	 * */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	public Long countAll(final String hql) {
@@ -165,8 +178,9 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends HibernateDa
 				});
 		return count;
 	}
+
 	/**
-	 * 获取指定实体Class指定条件的记录总数
+	 * * 李先瞧 2015-7-25 获取指定实体Class指定条件的记录总数
 	 * 
 	 * @param entityClass
 	 *            实体Class
@@ -178,9 +192,10 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends HibernateDa
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public Long findTotalCount(Class<T> entityClass, final String where,
+	public Long queryTotalCount(final Class<T> entityClass, final String where,
 			final Object... values) {
-		final String hql = "select count(e) from " + entityClass.getName() + " as e "+ where; 
+		final String hql = "select count(e) from " + entityClass.getName()
+				+ " as e " + where;
 		Long count = (Long) getHibernateTemplate().execute(
 				new HibernateCallback() {
 					public Object doInHibernate(Session session)
@@ -190,25 +205,24 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends HibernateDa
 						return query.uniqueResult();
 					}
 				});
-		
-		
+
 		return count;
 	}
 
 	/**
-	 * 获取指定实体Class的记录总数
+	 * * 李先瞧 2015-7-25 获取指定实体Class的记录总数
 	 * 
 	 * @param entityClass
 	 *            实体Class
 	 * @return 记录总数
 	 */
 	@Override
-	public Long findTotalCount(Class<T> entityClass) {
-		return findTotalCount(entityClass, "");
+	public Long queryTotalCount(final Class<T> entityClass) {
+		return queryTotalCount(entityClass, "");
 	}
 
 	/**
-	 * 查找指定属性的实体集合
+	 * * 李先瞧 2015-7-25 查找指定属性的实体集合
 	 * 
 	 * @param entityClass
 	 *            实体
@@ -220,8 +234,8 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends HibernateDa
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<T> findByProperty(Class<T> entityClass, String propertyName,
-			Object value) {
+	public List<T> queryByProperty(final Class<T> entityClass,
+			final String propertyName, final Object value) {
 		try {
 			logger.debug("开始查找指定属性：" + propertyName + "为" + value + "的实体"
 					+ entityClass.getName());
@@ -235,7 +249,7 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends HibernateDa
 	}
 
 	/**
-	 * 模糊查询指定条件对象集合 <br>
+	 * * 李先瞧 2015-7-25 模糊查询指定条件对象集合 <br>
 	 * 用法：可以实例化一个空的T对象，需要查询某个字段，就set该字段的条件然后调用本方法<br>
 	 * 缺点：目前测试貌似只能支持String的模糊查询，虽然有办法重写，但没必要，其他用HQL<br>
 	 * 
@@ -244,7 +258,7 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends HibernateDa
 	 * @return 结合
 	 */
 	@Override
-	public List<T> findByExample(T entity) {
+	public List<T> queryByEntity(final T entity) {
 		try {
 			List<T> results = getHibernateTemplate().findByExample(entity);
 			return results;
@@ -255,14 +269,14 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends HibernateDa
 	}
 
 	/**
-	 * 补充方法(未测) 据说可以无视session的状态持久化对象
+	 * * 李先瞧 2015-7-25 补充方法(未测) 据说可以无视session的状态持久化对象
 	 * 
 	 * @param entity
 	 *            实体类
 	 * @return 持久后的实体类
 	 */
 	@Override
-	public T merge(T entity) {
+	public T merge(final T entity) {
 		try {
 			T result = (T) getHibernateTemplate().merge(entity);
 			return result;
@@ -273,14 +287,14 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends HibernateDa
 	}
 
 	/**
-	 * 清除实体的锁定状态<br>
+	 * * 李先瞧 2015-7-25 清除实体的锁定状态<br>
 	 * 方法未测
 	 * 
 	 * @param entity
 	 *            实体
 	 */
 	@Override
-	public void attachClean(T entity) {
+	public void attachClean(final T entity) {
 		try {
 			getHibernateTemplate().lock(entity, LockMode.NONE);
 		} catch (RuntimeException re) {
@@ -291,38 +305,35 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends HibernateDa
 
 	/**
 	 * 
-	 * 李先瞧
-	 * 2015-7-25
-	 * 分页装载指定类的所有持久化对象
+	 * 李先瞧 2015-7-25 分页装载指定类的所有持久化对象
+	 * 
 	 * @param hql
 	 * @param pageNo
 	 * @param pageSize
-	 * @return 
+	 * @return
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public List<?> listAll(final String hql, int pageNo, int pageSize) {
 		final int pNo = pageNo;
 		final int pSize = pageSize;
-		List<?> list = getHibernateTemplate().execute(
-				new HibernateCallback() {
-					public Object doInHibernate(Session session)
-							throws HibernateException {
-						Query query = session.createQuery(hql);
-						query.setMaxResults(pSize);
-						query.setFirstResult((pNo - 1) * pSize);
-						List<?> result = query.list();
-						if (!Hibernate.isInitialized(result))
-							Hibernate.initialize(result);
-						return result;
-					}
-				});
+		List<?> list = getHibernateTemplate().execute(new HibernateCallback() {
+			public Object doInHibernate(Session session)
+					throws HibernateException {
+				Query query = session.createQuery(hql);
+				query.setMaxResults(pSize);
+				query.setFirstResult((pNo - 1) * pSize);
+				List<?> result = query.list();
+				if (!Hibernate.isInitialized(result))
+					Hibernate.initialize(result);
+				return result;
+			}
+		});
 		return list;
 	}
 
-	
 	/**
-	 * 按HQL分页查询.
+	 * * 李先瞧 2015-7-25 按HQL分页查询.
 	 * 
 	 * @param page
 	 *            页面对象
@@ -334,7 +345,7 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends HibernateDa
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public Page<T> findByPage(final Page<T> page, final String hql,
+	public Page<T> queryByPage(final Page<T> page, final String hql,
 			final Object... values) {
 		try {
 			logger.debug("开始查找指定HQL分页数据," + hql);
@@ -363,7 +374,7 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends HibernateDa
 	}
 
 	/**
-	 * 根据查询条件与参数列表创建Query对象
+	 * * 李先瞧 2015-7-25 根据查询条件与参数列表创建Query对象
 	 * 
 	 * @param session
 	 *            Hibernate会话
@@ -374,7 +385,8 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends HibernateDa
 	 * @return Query对象
 	 */
 	@Override
-	public Query createQuery(Session session, String hql, Object... objects) {
+	public Query createQuery(final Session session, final String hql,
+			final Object... objects) {
 		Query query = session.createQuery(hql);
 		if (objects != null) {
 			for (int i = 0; i < objects.length; i++) {
@@ -384,10 +396,12 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends HibernateDa
 		return query;
 	}
 
-	/** 统计指定类的查询结果 */
+	/**
+	 * * 李先瞧 2015-7-25 统计指定类的查询结果
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public int countQuery(String hql) {
+	public int countQuery(final String hql) {
 		final String counthql = hql;
 		Long count = (Long) getHibernateTemplate().execute(
 				new HibernateCallback() {
@@ -406,15 +420,16 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends HibernateDa
 	 * 李先瞧 2015-7-25 删除指定ID的持久化对象
 	 * 
 	 * @param clazz实体类型
-	 * @param id id号
+	 * @param id
+	 *            id号
 	 */
 	@Override
-	public void delById(Class<?> clazz, Serializable id) {
+	public void deleteById(final Class<?> clazz, final Serializable id) {
 		getHibernateTemplate().delete(getHibernateTemplate().load(clazz, id));
 	}
 
 	/**
-	 * 从Spring上下文中获取本类对象<br>
+	 * 李先瞧 2015-7-25 从Spring上下文中获取本类对象<br>
 	 * 此方法可能存在线程并发问题（待测）
 	 * 
 	 * @param context
@@ -437,7 +452,7 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends HibernateDa
 	 * @return 实体对象
 	 */
 	@Override
-	public T findById(Class<T> entityClass, Serializable id) {
+	public T queryById(final Class<T> entityClass, final Serializable id) {
 
 		try {
 			logger.debug("开始查找ID为" + id + "的实体：" + entityClass.getName());
@@ -446,6 +461,272 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends HibernateDa
 			logger.error("查找指定ID实体异常，ID：" + id, e);
 			throw e;
 		}
+	}
+
+	/**
+	 * 李先瞧 2015-7-25 使用hql语句进行分页操作
+	 * 
+	 * @param hql
+	 * 
+	 * @param offset第一条记录索引
+	 * 
+	 * @param pageSize每页需要显示的记录数
+	 * 
+	 * @return查询的记录
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public List<T> queryByPage(final String hql,
+
+	final int offset, final int pageSize) {
+
+		if (hql == null) {
+
+			return new ArrayList<T>();
+
+		}
+
+		List<T> list = getHibernateTemplate().execute(new HibernateCallback() {
+
+			public Object doInHibernate(final Session session)
+
+			throws HibernateException {
+
+				Query query = session.createQuery(hql);
+
+				if (!(offset == 0 && pageSize == 0)) {
+
+					query.setFirstResult(offset).setMaxResults(pageSize);
+
+				}
+
+				List<T> result = query.list();
+
+				return result;
+
+			}
+
+		});
+
+		return list;
+
+	}
+
+	/**
+	 * 李先瞧 2015-7-25 使用sql 语句进行分页查询操作
+	 * 
+	 * @param sql
+	 * 
+	 * @param offset
+	 * 
+	 * @param pageSize
+	 * 
+	 * @return
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public List queryByPageSQL(final String sql,
+
+	final int offset, final int pageSize) {
+
+		List list = getHibernateTemplate().execute(new HibernateCallback() {
+
+			public Object doInHibernate(final Session session)
+
+			throws HibernateException {
+
+				Query query = session.createSQLQuery(sql);
+
+				if (!(offset == 0 && pageSize == 0)) {
+
+					query.setFirstResult(offset).setMaxResults(pageSize);
+
+				}
+
+				List result = query.list();
+
+				return result;
+
+			}
+
+		});
+
+		return list;
+
+	}
+
+	/**
+	 * 李先瞧 2015-7-25 使用hql 语句进行分页查询操作
+	 * 
+	 * @param hql
+	 *            需要查询的hql语句
+	 * 
+	 * @param value
+	 *            如果hql有一个参数需要传入，value就是传入的参数
+	 * 
+	 * @param offset
+	 *            第一条记录索引
+	 * 
+	 * @param pageSize
+	 *            每页需要显示的记录数
+	 * 
+	 * @return 当前页的所有记录
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public List<T> queryByPage(final String hql, final Object value,
+
+	final int offset, final int pageSize) {
+
+		List<T> list = getHibernateTemplate().execute(new HibernateCallback()
+
+		{
+
+			public Object doInHibernate(Session session)
+
+			throws HibernateException
+
+			{
+
+				Query query = session.createQuery(hql).setParameter(0, value);
+
+				if (!(offset == 0 && pageSize == 0)) {
+
+					query.setFirstResult(offset).setMaxResults(pageSize);
+
+				}
+
+				List<T> result = query.list();
+
+				return result;
+
+			}
+
+		});
+
+		return list;
+
+	}
+
+	/**
+	 * 李先瞧 2015-7-25 使用hql 语句进行分页查询操作
+	 * 
+	 * @param hql
+	 *            需要查询的hql语句
+	 * 
+	 * @param values
+	 *            如果hql有一个参数需要传入，value就是传入的参数
+	 * 
+	 * @param offset
+	 *            第一条记录索引
+	 * 
+	 * @param pageSize
+	 *            每页需要显示的记录数
+	 * 
+	 * @return 当前页的所有记录
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public List<T> queryByPage(final String hql, final Object[] values,
+			final int offset,
+
+			final int pageSize) {
+
+		List<T> list = getHibernateTemplate().execute(new HibernateCallback() {
+
+			public Object doInHibernate(Session session)
+
+			throws HibernateException {
+
+				Query query = session.createQuery(hql);
+
+				for (int i = 0; i < values.length; i++) {
+
+					query.setParameter(i, values[i]);
+
+				}
+
+				if (!(offset == 0 && pageSize == 0)) {
+
+					query.setFirstResult(offset).setMaxResults(pageSize);
+
+				}
+
+				List<T> result = query.list();
+
+				return result;
+
+			}
+
+		});
+
+		return list;
+
+	}
+
+	/**
+	 * 
+	 * 李先瞧 2015-7-25
+	 * 
+	 * 更新指定属性值
+	 * 
+	 * @param hql
+	 * @param values
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public void updateObj(final String hql, final Object[] values) {
+
+		getHibernateTemplate().execute(new HibernateCallback() {
+
+			public Object doInHibernate(Session session)
+
+			throws HibernateException {
+
+				Query query = session.createQuery(hql);
+
+				for (int i = 0; i < values.length; i++) {
+
+					query.setParameter(i, values[i]);
+
+				}
+
+				query.executeUpdate();
+
+				return null;
+
+			}
+
+		});
+
+	}
+
+	/**
+	 * 李先瞧 2015-7-25 根据语句查找总数
+	 * 
+	 * @param hql
+	 *            hql语句
+	 * 
+	 * @return 对应的数目
+	 */
+	public Integer getCount(final String hql) {
+
+		Integer count;
+
+		// iterate方法与list方法的区别是list取出全部，iterator取出主键，迭代的时候才取出数据
+
+		count = ((Long) getHibernateTemplate().iterate(hql).next()).intValue();
+
+		System.out.println("大小" + count);
+
+		return count;
+
+	}
+
+	/**
+	 * 李先瞧 2015-7-25 返回list集合
+	 * 
+	 * */
+	@SuppressWarnings({ "rawtypes" })
+	public List getListDataByHQL(final String hql) {
+
+		return getHibernateTemplate().find(hql);
+
 	}
 
 }
