@@ -24,4 +24,9 @@
 	<include file="./struts/records/struts-records.xml"></include><!-- 档案管理  -->
 	<include file="./struts/records/struts-supplier.xml"></include><!-- 供应商信息   -->
 	<include file="./struts/records/struts-vip.xml"></include><!-- 会员信息  -->
+	
+	<!-- 权限管理   -->
+	<include file="./struts/permissions/struts-permissions.xml"></include>
+	
+	
 </struts>

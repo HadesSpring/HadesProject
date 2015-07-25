@@ -149,6 +149,7 @@
 	<!-- ********************************* 以下是 导入bean文件  *********************************  -->
 	<!-- 用户管理  -->
 	<import resource="classpath:/spring/user/spring-user.xml" />
+	
 	<!-- 档案管理 -->
 	<import resource="classpath:/spring/records/spring-accounts.xml" /><!-- 账户信息  -->
 	<import resource="classpath:/spring/records/spring-customer.xml" /><!--  客户信息  -->
@@ -160,7 +161,11 @@
 	<import resource="classpath:/spring/records/spring-records.xml" /><!-- 档案管理  -->
 	<import resource="classpath:/spring/records/spring-supplier.xml" /><!-- 供应商信息   -->
 	<import resource="classpath:/spring/records/spring-vip.xml" /><!-- 会员信息  -->
-
+	
+	<!-- 权限管理  -->
+    <import resource="classpath:/spring/permissions/spring-permissions.xml" />
+    
+    
 </beans>
 	
 
