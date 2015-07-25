@@ -2,6 +2,7 @@ package com.hades.user.service.impl;
 
 import java.util.List;
 
+import com.hades.framework.core.model.Page;
 import com.hades.user.dao.IUserDao;
 import com.hades.user.db.User;
 import com.hades.user.service.IUserService;
@@ -29,6 +30,9 @@ public class UserServiceImpl implements IUserService {
 	public List<User> queryAllUser() {
 		// TODO Auto-generated method stub
 		return userDao.queryAllUser();
+	}
+	public Page<User> queryByPage(final Page<User> page,final Object... values) {
+		return userDao.queryByPage(page,  values);
 	}
 
 }

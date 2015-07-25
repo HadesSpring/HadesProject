@@ -70,7 +70,7 @@ public interface IHadesBaseDao<T extends Object, ID extends Serializable> {
 	 *            可变的参数列表
 	 * @return 集合
 	 */
-	public List<Object> query(final String hql, final Object... values);
+	public List<T> query(final String hql, final Object... values);
 
 	/**
 	 * 按照HQL语句查询唯一对象.
@@ -161,7 +161,7 @@ public interface IHadesBaseDao<T extends Object, ID extends Serializable> {
 	 * @param pageSize
 	 * @return
 	 */
-	public List<?> listAll(final String hql, int pageNo, int pageSize);
+	public List<?> queryAll(final String hql, int pageNo, int pageSize);
 
 	/**
 	 * 按HQL分页查询.
@@ -299,6 +299,6 @@ public interface IHadesBaseDao<T extends Object, ID extends Serializable> {
 	 * 
 	 * */
 	@SuppressWarnings("rawtypes")
-	public List getListDataByHQL(final String hql);
+	public List queryDataByHQL(final String hql);
 
 }

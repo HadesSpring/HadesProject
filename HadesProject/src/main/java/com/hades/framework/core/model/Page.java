@@ -22,7 +22,7 @@ public class Page<T> extends QueryParameter {
 	
 	private List<T> result = null;
 
-	private int totalCount = -1;
+	private long totalCount = -1;
 
 	public Page() {
 	}
@@ -60,26 +60,26 @@ public class Page<T> extends QueryParameter {
 	/**
 	 * 总记录数.
 	 */
-	public int getTotalCount() {
+	public long getTotalCount() {
 		return totalCount;
 	}
 
-	public void setTotalCount(int totalCount) {
+	public void setTotalCount(long totalCount) {
 		this.totalCount = totalCount;
 	}
 
 	/**
 	 * 计算总页数.
 	 */
-	public Integer getTotalPages() {
+	public long getTotalPages() {
 		if (totalCount == -1)
-			return -1;
+			return -1l;
 
-		int count = totalCount / pageSize;
+		long count = totalCount / pageSize;
 		if (totalCount % pageSize > 0) {
 			count++;
 		}
-		return new Integer(count);
+		return new Long(count);
 	}
 
 	/**

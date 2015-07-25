@@ -127,10 +127,10 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Object> query(final String hql, final Object... values) {
+	public List<T> query(final String hql, final Object... values) {
 		try {
 			logger.debug("开始查询指定HQL语句," + hql);
-			return (List<Object>) getHibernateTemplate().find(hql, values);
+			return (List<T>) getHibernateTemplate().find(hql, values);
 		} catch (RuntimeException e) {
 			logger.error("查询指定HQL异常，HQL：" + hql, e);
 			throw e;
@@ -148,10 +148,10 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public Object queryUnique(final String hql, final Object... values) {
+	public T queryUnique(final String hql, final Object... values) {
 		try {
 			logger.debug("开始查询返回唯一结果的HQL语句," + hql);
-			return getHibernateTemplate().execute(new HibernateCallback() {
+			return (T)getHibernateTemplate().execute(new HibernateCallback() {
 				public Object doInHibernate(Session s)
 						throws HibernateException {
 					Query query = createQuery(s, hql, values);
@@ -317,16 +317,16 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public List<?> listAll(final String hql, int pageNo, int pageSize) {
+	public List<T> queryAll(final String hql, int pageNo, int pageSize) {
 		final int pNo = pageNo;
 		final int pSize = pageSize;
-		List<?> list = getHibernateTemplate().execute(new HibernateCallback() {
+		List<T> list = getHibernateTemplate().execute(new HibernateCallback() {
 			public Object doInHibernate(Session session)
 					throws HibernateException {
 				Query query = session.createQuery(hql);
 				query.setMaxResults(pSize);
 				query.setFirstResult((pNo - 1) * pSize);
-				List<?> result = query.list();
+				List<T> result = query.list();
 				if (!Hibernate.isInitialized(result))
 					Hibernate.initialize(result);
 				return result;
@@ -364,9 +364,7 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends
 								query.setMaxResults(page.getPageSize());
 							}
 							page.setResult(query.list());
-							if (logger.isDebugEnabled()) {
 								logger.debug("查找指定HQL分页数据成功," + hql);
-							}
 							return page;
 						}
 					});
@@ -615,7 +613,7 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends
 	 *            需要查询的hql语句
 	 * 
 	 * @param values
-	 *            如果hql有一个参数需要传入，value就是传入的参数
+	 *            如果hql有多个参数需要传入，values就是传入的参数
 	 * 
 	 * @param offset
 	 *            第一条记录索引
@@ -715,7 +713,7 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends
 
 		count = ((Long) getHibernateTemplate().iterate(hql).next()).intValue();
 
-		System.out.println("大小" + count);
+		logger.debug("大小" + count);
 
 		return count;
 
@@ -726,7 +724,7 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends
 	 * 
 	 * */
 	@SuppressWarnings({ "rawtypes" })
-	public List getListDataByHQL(final String hql) {
+	public List queryDataByHQL(final String hql) {
 
 		return getHibernateTemplate().find(hql);
 

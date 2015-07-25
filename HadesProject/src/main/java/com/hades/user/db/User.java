@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-@Entity(name="user")
+@Entity(name="User" )
 public class User implements Serializable{
 
 	/**

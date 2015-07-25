@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.hades.framework.core.dao.impl.HadesBaseDaoSupport;
+import com.hades.framework.core.model.Page;
 import com.hades.user.dao.IUserDao;
 import com.hades.user.db.User;
 
@@ -34,7 +35,14 @@ public class UserDaoImpl extends HadesBaseDaoSupport<User,Long> implements IUser
 		return list;
 	}
 
-
+	
+	public Page<User> queryByPage(final Page<User> page,final Object... values) {
+		String where = " where UserPwd = ?";
+	 String hql = "from User "+ where;
+	   page.setTotalCount( this.queryTotalCount(User.class, where, values));
+		return this.queryByPage(page, hql, values);
+		
+	}
 
 
 	
