@@ -26,7 +26,10 @@ import com.hades.framework.core.dao.IHadesBaseDao;
 import com.hades.framework.core.model.Page;
 
 /**
- * 
+ * 注意: 此类的封装实现  是基于hibernate的 对于单表的操作 很好
+ *       但是对于复杂查询 以及高并发的查询语句 , 该类中的方法是不合适的,
+ *       众所周知 hibernate的查询效率是很低的, 在要求大数据查询或复杂查询时最好采用jdbc;
+ *       如果混合数据源操作的话, 需要关闭hibernate的二级缓存,以免造成数据的脏读;
  * HadesProject
  * 所有底层持久化操作必须继承此类, 
  * 通过此类的方法进行持久化, 
