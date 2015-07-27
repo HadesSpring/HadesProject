@@ -7,6 +7,8 @@
 package com.hades.framework.core.dao.impl;
 
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,10 +17,12 @@ import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate4.HibernateCallback;
+import org.springframework.orm.hibernate4.SessionFactoryUtils;
 import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -51,6 +55,40 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends
         super.setSessionFactory(sessionFactory);    
     }
 
+	/**
+	 * 获取会话session , 方法采取getCurrentSession();
+	 * 
+	 * 注意:采用getCurrentSession()创建的session在commit或rollback时会自动关闭，
+	 * 而采用openSession()，创建的session必须手动关闭 . 
+	 * 
+	 * 
+	 * 李先瞧
+	 * 2015-7-27
+	 * 
+	 * @return 返回会话session , 此session是否关闭均没关系;但为了养成好的习惯,先判断是否关闭然后在进行关闭;
+	 */
+	@Override
+	public Session getSession(){
+		return this.currentSession();
+	}
+	/**
+	 * 获取数据库连接
+	 * hibernate4中移出了session.getconnection();
+	 * 替代方案:
+	 * this.currentSession().doWork(new Work() {
+	 *	    public void execute(Connection connection) throws SQLException {
+	 *			// 执行JDBC操作 ,注意不要close了这个connection。  }
+	 *	});
+	 * 李先瞧
+	 * 2015-7-27
+	 * 
+	 * @return 获取返回链接 ,使用完后注意关闭connection
+	 * @throws SQLException
+	 */
+	public Connection getConnection() throws SQLException{
+		return SessionFactoryUtils.getDataSource(this.getSessionFactory()).getConnection();
+	}
+	
 	/**
 	 * * 李先瞧 2015-7-25 保存指定实体类
 	 * 
@@ -662,6 +700,22 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends
 
 		return list;
 
+	}
+	
+	
+	
+	/**
+	 * 根据原生sql进行查询 ,  select 后面最好跟列字段,可以方便跟obj[]数组对应取值
+	 * 李先瞧
+	 * 2015-7-27
+	 * 
+	 * @param sql
+	 * @return 根据select后面的列顺序进行封装后的集合
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Object[]>  queryBySql(String sql ){
+		SQLQuery  query = this.getSession().createSQLQuery(sql);
+		return (List<Object[]> )query.list();
 	}
 
 	/**

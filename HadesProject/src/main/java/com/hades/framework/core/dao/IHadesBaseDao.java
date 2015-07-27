@@ -1,6 +1,8 @@
 package com.hades.framework.core.dao;
 
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -17,6 +19,34 @@ import com.hades.framework.core.model.Page;
  */
 public interface IHadesBaseDao<T extends Object, ID extends Serializable> {
 
+	/**
+	 * 获取数据库连接
+	 * hibernate4中移出了session.getconnection();
+	 * 替代方案:
+	 * this.currentSession().doWork(new Work() {
+	 *	    public void execute(Connection connection) throws SQLException {
+	 *			// 执行JDBC操作       // 注意不要close了这个connection。 }
+	 *	});
+	 * 李先瞧
+	 * 2015-7-27
+	 * 
+	 * @return 获取返回链接 ,使用完后注意关闭connection
+	 * @throws SQLException
+	 */
+	public Connection getConnection() throws SQLException;
+	/**
+	 * 获取会话session , 方法采取getCurrentSession();
+	 * 
+	 * 注意:采用getCurrentSession()创建的session在commit或rollback时会自动关闭，
+	 * 而采用openSession()，创建的session必须手动关闭 . 
+	 * 
+	 * 
+	 * 李先瞧
+	 * 2015-7-27
+	 * 
+	 * @return
+	 */
+	public Session getSession();
 	/**
 	 * 保存指定实体类
 	 * 
@@ -193,6 +223,18 @@ public interface IHadesBaseDao<T extends Object, ID extends Serializable> {
 	/** 统计指定类的查询结果 */
 	public int countQuery(final String hql);
 
+	
+	/**
+	 * 根据原生sql进行查询 ,  select 后面最好跟列字段,可以方便跟obj[]数组对应取值
+	 * 李先瞧
+	 * 2015-7-27
+	 * 
+	 * @param sql
+	 * @return 根据select后面的列顺序进行封装后的集合
+	 */
+	public List<Object[]>  queryBySql(String sql );
+	
+	
 	/**
 	 * 
 	 * 李先瞧 2015-7-25 删除指定ID的持久化对象
