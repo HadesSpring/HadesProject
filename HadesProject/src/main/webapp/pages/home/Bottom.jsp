@@ -22,10 +22,12 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </head>
   
   <body>
-    <jsp:include page="./pages/home/Top.jsp"></jsp:include>
-	<iframe name="MainContent" src="./pages/home/MainCenter.jsp" width="100%" height="530px"
-		scrolling="auto"></iframe>
-    <jsp:include page="./pages/home/Bottom.jsp"></jsp:include>
+    <!-- 底部 -->
+		<footer class="templatemo-footer">
+			<div class="templatemo-copyright">
+				<p>Copyright &copy; 2015 Your Company Name</p>
+			</div>
+		</footer>
   </body>
   <script src="./resource/js/jquery/jquery-2.1.4.min.js"></script>
 <script src="./resource/js/bootstrap.min.js"></script>
