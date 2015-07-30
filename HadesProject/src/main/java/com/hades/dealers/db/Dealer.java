@@ -7,12 +7,18 @@
 package com.hades.dealers.db;
 
 import java.io.Serializable;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+
+import com.hades.user.db.User;
 
 
 /**
@@ -40,6 +46,15 @@ public class Dealer implements Serializable{
 	private long id;
 	
 	/**
+	 * 删除渠道经销商的时候 要级联删除用户
+	 * @OneToMany(mapped=“由One的一方指向Many的一方，并且，这个属性应该等于Many的一方中含有One类的属性的属性名，否则会出错啦 ”)
+	 */
+	@OneToMany(mappedBy = "dealer",cascade={CascadeType.REMOVE,CascadeType.MERGE,CascadeType.PERSIST})
+	private Set<User> users;
+
+	
+	
+	/**
 	 * 名称
 	 */
 	@Column(name="name",length=32 , unique = true,nullable = false)
@@ -59,6 +74,14 @@ public class Dealer implements Serializable{
 
 	
 	
+	public Set<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(Set<User> users) {
+		this.users = users;
+	}
+
 	public long getId() {
 		return id;
 	}
