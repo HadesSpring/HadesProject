@@ -7,23 +7,29 @@
 package com.hades.dealers.db;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-
+import com.hades.records.area.db.Area;
 import com.hades.user.db.User;
 
 
 /**
  * 
  * 经销商渠道实体 
+ * 渠道经销商  自关联
+ * 渠道经销商 一旦创建不能删除 , 只提供修改
  * HadesProject
  * @author 李先瞧
  * 2015-7-28
@@ -46,6 +52,7 @@ public class Dealer implements Serializable{
 	private long id;
 	
 	/**
+	 * 与用户双向一对多关联
 	 * 删除渠道经销商的时候 要级联删除用户
 	 * @OneToMany(mapped=“由One的一方指向Many的一方，并且，这个属性应该等于Many的一方中含有One类的属性的属性名，否则会出错啦 ”)
 	 */
@@ -53,6 +60,36 @@ public class Dealer implements Serializable{
 	private Set<User> users;
 
 	
+	/**
+	 * 渠道多对一地区  双向关联
+	 */
+	@ManyToOne(fetch = FetchType.LAZY,optional=false)
+	@JoinColumn(name = "areaId")
+	private Area area;
+	
+	
+	/**
+	 * 渠道子关联
+	 * 渠道的下级子渠道
+	 */
+	@OneToMany(mappedBy = "parentDealer" , cascade = {CascadeType.REMOVE,CascadeType.MERGE})
+	private List<Dealer> childDealers; 
+	
+	/**
+	 * 渠道的上级渠道
+	 */
+	@ManyToOne(fetch = FetchType.LAZY,optional = false )
+	@JoinColumn(name = "parentId")
+	private Dealer parentDealer;
+	
+	
+	
+	
+	/**
+	 * 按照特定规则 自动生成 渠道编号
+	 */
+	@Column(name = "number" , length = 32 ,unique = true, nullable = false)
+	private String number;
 	
 	/**
 	 * 名称
@@ -72,14 +109,63 @@ public class Dealer implements Serializable{
 	@Column(name="description" , length=255 )
 	private String description;
 
+	/**
+	 * 类型 指定经销商渠道的 类型 
+	 * 属于总代理  还是区域下级渠道
+	 */
+	@Column(name="type",length = 2,nullable = false)
+	private int type;
+	
+
 	
 	
+
+	public Area getArea() {
+		return area;
+	}
+
+	public void setArea(Area area) {
+		this.area = area;
+	}
+
+	public String getNumber() {
+		return number;
+	}
+
+	public void setNumber(String number) {
+		this.number = number;
+	}
+
+	public List<Dealer> getChildDealers() {
+		return childDealers;
+	}
+
+	public void setChildDealers(List<Dealer> childDealers) {
+		this.childDealers = childDealers;
+	}
+
+	public Dealer getParentDealer() {
+		return parentDealer;
+	}
+
+	public void setParentDealer(Dealer parentDealer) {
+		this.parentDealer = parentDealer;
+	}
+
 	public Set<User> getUsers() {
 		return users;
 	}
 
 	public void setUsers(Set<User> users) {
 		this.users = users;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
 	}
 
 	public long getId() {

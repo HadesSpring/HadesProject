@@ -15,6 +15,8 @@ import com.hades.dealers.db.Dealer;
 
 /**
  * 用户实体类 , 附属于经销商下 , 每个经销商可以有多个用户
+ * 删除经销商的时候要级联删除用户
+ * user与渠道  多对一 双向关联 
  * HadesProject
  * @author 李先瞧
  * 2015-7-30
@@ -40,6 +42,7 @@ public class User implements Serializable{
 	
 	
 	/**
+	 * 与渠道经销商 双向多对一关联  
 	 * CascadeType.PERSIST只有A类新增时，会级联B对象新增。若B对象在数据库存（跟新）在则抛异常（让B变为持久态） 
        CascadeType.MERGE指A类新增或者变化，会级联B对象（新增或者变化） 
        CascadeType.REMOVE只有A类删除时，会级联删除B类； 
@@ -85,7 +88,7 @@ public class User implements Serializable{
 	private String phone;
 	
 	/**
-	 * 联系电话
+	 * 地址
 	 */
 	@Column(name="address" , length=255 , nullable = false )
 	private String address;
