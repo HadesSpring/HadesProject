@@ -79,7 +79,7 @@ public class DepartmentInfo implements Serializable{
 	
 	
 	/**
-	 * 按照特定规则 自动生成 渠道编号
+	 * 按照特定规则 自动生成 编号
 	 */
 	@Column(name = "number" , length = 32 ,unique = true, nullable = false)
 	private String number;

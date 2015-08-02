@@ -362,7 +362,7 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends
 		final int pNo = pageNo;
 		final int pSize = pageSize;
 		List<T> list = getHibernateTemplate().execute(new HibernateCallback() {
-			public Object doInHibernate(Session session)
+			public List<T> doInHibernate(Session session)
 					throws HibernateException {
 				Query query = session.createQuery(hql);
 				query.setMaxResults(pSize);
@@ -529,7 +529,7 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends
 
 		List<T> list = getHibernateTemplate().execute(new HibernateCallback() {
 
-			public Object doInHibernate(final Session session)
+			public List<T> doInHibernate(final Session session)
 
 			throws HibernateException {
 
@@ -571,7 +571,7 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends
 
 		List list = getHibernateTemplate().execute(new HibernateCallback() {
 
-			public Object doInHibernate(final Session session)
+			public List doInHibernate(final Session session)
 
 			throws HibernateException {
 
@@ -621,7 +621,7 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends
 
 		{
 
-			public Object doInHibernate(Session session)
+			public List<T> doInHibernate(Session session)
 
 			throws HibernateException
 
@@ -672,7 +672,7 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends
 
 		List<T> list = getHibernateTemplate().execute(new HibernateCallback() {
 
-			public Object doInHibernate(Session session)
+			public List<T> doInHibernate(Session session)
 
 			throws HibernateException {
 
