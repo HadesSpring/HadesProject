@@ -7,7 +7,9 @@
 package com.hades.records.department.db;
 
 import java.io.Serializable;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,9 +18,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import com.hades.dealers.db.Dealer;
 import com.hades.records.area.db.Area;
+import com.hades.records.employee.db.EmployeeInfo;
 
 /**
  * 部门档案信息实体类
@@ -70,6 +74,14 @@ public class DepartmentInfo implements Serializable{
 	@ManyToOne(fetch = FetchType.LAZY,optional = false)
 	@JoinColumn(name = "departmentCategoryId" ) 
 	private DepartmentCategory departmentCategory;
+	
+	
+	/**
+	 * 部门档案信息  一对多  员工信息   双向关联
+	 * 
+	 */
+	@OneToMany(mappedBy = "departmentInfo" , cascade = {CascadeType.REMOVE,CascadeType.MERGE})
+	private Set<EmployeeInfo> employeeInfos;
 	
 	/**
 	 * 名称
@@ -178,6 +190,16 @@ public class DepartmentInfo implements Serializable{
 
 	public Dealer getDealer() {
 		return dealer;
+	}
+
+
+	public Set<EmployeeInfo> getEmployeeInfos() {
+		return employeeInfos;
+	}
+
+
+	public void setEmployeeInfos(Set<EmployeeInfo> employeeInfos) {
+		this.employeeInfos = employeeInfos;
 	}
 
 
