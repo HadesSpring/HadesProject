@@ -356,12 +356,12 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends
 	 * @param pageSize
 	 * @return
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
+	@SuppressWarnings("unchecked")
 	public List<T> queryAll(final String hql, int pageNo, int pageSize) {
 		final int pNo = pageNo;
 		final int pSize = pageSize;
-		List<T> list = getHibernateTemplate().execute(new HibernateCallback() {
+		List<T> list = getHibernateTemplate().execute(new HibernateCallback<List<T>>() {
 			public List<T> doInHibernate(Session session)
 					throws HibernateException {
 				Query query = session.createQuery(hql);
@@ -516,7 +516,7 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends
 	 * 
 	 * @return查询的记录
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked"})
 	public List<T> queryByPage(final String hql,
 
 	final int offset, final int pageSize) {
@@ -527,7 +527,7 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends
 
 		}
 
-		List<T> list = getHibernateTemplate().execute(new HibernateCallback() {
+		List<T> list = getHibernateTemplate().execute(new HibernateCallback<List<T>>() {
 
 			public List<T> doInHibernate(final Session session)
 
@@ -564,14 +564,14 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends
 	 * 
 	 * @return
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public List queryByPageSQL(final String sql,
+	public List<T> queryByPageSQL(final String sql,
 
 	final int offset, final int pageSize) {
 
-		List list = getHibernateTemplate().execute(new HibernateCallback() {
+		List<T> list = getHibernateTemplate().execute(new HibernateCallback<List<T>>() {
 
-			public List doInHibernate(final Session session)
+			@SuppressWarnings("unchecked")
+			public List<T> doInHibernate(final Session session)
 
 			throws HibernateException {
 
@@ -583,7 +583,7 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends
 
 				}
 
-				List result = query.list();
+				List<T> result = query.list();
 
 				return result;
 
@@ -612,12 +612,12 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends
 	 * 
 	 * @return 当前页的所有记录
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked"})
 	public List<T> queryByPage(final String hql, final Object value,
 
 	final int offset, final int pageSize) {
 
-		List<T> list = getHibernateTemplate().execute(new HibernateCallback()
+		List<T> list = getHibernateTemplate().execute(new HibernateCallback<List<T>>()
 
 		{
 
@@ -664,13 +664,13 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends
 	 * 
 	 * @return 当前页的所有记录
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked"})
 	public List<T> queryByPage(final String hql, final Object[] values,
 			final int offset,
 
 			final int pageSize) {
 
-		List<T> list = getHibernateTemplate().execute(new HibernateCallback() {
+		List<T> list = getHibernateTemplate().execute(new HibernateCallback<List<T>>() {
 
 			public List<T> doInHibernate(Session session)
 
