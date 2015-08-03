@@ -556,34 +556,31 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends
 	/**
 	 * 李先瞧 2015-7-25 使用sql 语句进行分页查询操作
 	 * 
-	 * @param sql
+	 * @param sql = select p.id,p.name from product p,Category c where p.category_id = c.id"
 	 * 
 	 * @param offset
 	 * 
 	 * @param pageSize
 	 * 
-	 * @return
+	 * @return 列数据被封装到 数组中  , 注意数组和列的顺序保持一致
 	 */
-	public List<T> queryByPageSQL(final String sql,
+	@Override
+	public List<Object[]> queryByPageSQL(final String sql,
 
 	final int offset, final int pageSize) {
 
-		List<T> list = getHibernateTemplate().execute(new HibernateCallback<List<T>>() {
+		List<Object[]> list = getHibernateTemplate().execute(new HibernateCallback<List<Object[]>>() {
 
 			@SuppressWarnings("unchecked")
-			public List<T> doInHibernate(final Session session)
+			public List<Object[]>doInHibernate(final Session session)
 
 			throws HibernateException {
 
-				Query query = session.createSQLQuery(sql);
-
+				SQLQuery query = session.createSQLQuery(sql);
 				if (!(offset == 0 && pageSize == 0)) {
-
 					query.setFirstResult(offset).setMaxResults(pageSize);
-
 				}
-
-				List<T> result = query.list();
+				List<Object[]> result = query.list();
 
 				return result;
 
@@ -591,6 +588,72 @@ public class HadesBaseDaoSupport<T, ID extends Serializable> extends
 
 		});
 
+		return list;
+
+	}
+	
+	
+	
+	
+	
+	
+	/**
+	 * 通过原生sql进行关联查询 , 返回封装到对应的实体 中
+	 * 请参考sql的案例写法
+	 * 
+	 * 李先瞧
+	 * 2015-8-3
+	 * 
+	 * @param key     p
+	 * @param clazz   Product.class
+	 * @param Sql     select {p.*} from Product p,Category c where p.category_id=c.id;
+	 * @return
+	 */
+	public List<T> queryBySql(final String key, final Class<T> clazz,
+			final String sql) {
+		List<T> list = getHibernateTemplate().execute(
+				new HibernateCallback<List<T>>() {
+
+					@SuppressWarnings("unchecked")
+					public List<T> doInHibernate(final Session session)
+							throws HibernateException {
+						SQLQuery query = session.createSQLQuery(sql);
+						query.addEntity(key, clazz);
+						List<T> result = query.list();
+						return result;
+					}
+				});
+		return list;
+	}
+	
+	
+	
+	
+	
+	/**
+	 * 
+	 * 通过原生Sql进行分页查询
+	 * 李先瞧
+	 * 2015-8-3
+	 * @param clazz 自动封装实体类型
+	 * @param sql  原生sql = select * from product limit 0,10
+	 * @param offset  开始索引
+	 * @param pageSize 每页显示数据
+	 * @return
+	 */
+	@Override
+	public List<T> queryBySQL(final Class<T> clazz, final String sql) {
+		List<T> list = getHibernateTemplate().execute(
+				new HibernateCallback<List<T>>() {
+					@SuppressWarnings("unchecked")
+					public List<T> doInHibernate(final Session session)
+					throws HibernateException {
+						SQLQuery query = session.createSQLQuery(sql);
+						query.addEntity(clazz);
+						List<T> result = query.list();
+						return result;
+					}
+				});
 		return list;
 
 	}
