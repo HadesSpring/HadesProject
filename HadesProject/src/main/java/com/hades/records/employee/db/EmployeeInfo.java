@@ -7,6 +7,7 @@
 package com.hades.records.employee.db;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,9 +16,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 import com.hades.dealers.db.Dealer;
+import com.hades.permissions.db.PermissionGroup;
 import com.hades.records.department.db.DepartmentInfo;
 
 /**
@@ -69,6 +73,21 @@ public class EmployeeInfo implements  Serializable{
 	private DepartmentInfo departmentInfo;
 	
 	
+	
+	/**
+	 * 员工信息  与提成组多对一单项关联
+	 */
+	@ManyToOne(fetch = FetchType.LAZY , optional = false)
+	@JoinColumn(name = "deductGroupId")
+	private DeductGroup deductGroup;
+	
+	/**
+	 * 员工多对多 权限组  双向关联
+	 */
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "PermissionGroup_EmployeeInfo", joinColumns = { @JoinColumn(name = "employeeInfoId") }, inverseJoinColumns = { @JoinColumn(name = "permissionGroupId") })
+	private List<PermissionGroup> permissionGroups;
+
 	/**
 	 * 姓名
 	 */
@@ -92,19 +111,66 @@ public class EmployeeInfo implements  Serializable{
 	private  int  degree;
 
 
+	/**
+	 * 提成
+	 */
+	@Column(name="deduct",length=12 )
+	private String  deduct;
+	
+	/**
+	 * 薪资,基本工资
+	 */
+	@Column(name="salary",length=20 )
+	private double salary;
+	
+	
+	/**
+	 * 员工属性
+	 * 1.职员   2.操作员   3.部门管理员  4.渠道管理员
+	 */
+	@Column(name="employeeType",length=2 )
+	private int employeeType;
 	
 	
 	
+	/**
+	 * 手机 
+	 */
+	@Column(name="phone",length=32 )
+	private  String  phone;
 	
 	
+	/**
+	 * 联系方式
+	 */
+	@Column(name="call",length=32 )
+	private  String  call;
 	
 	
+	/**
+	 * 班组  1.A组  2.B组 3.C组 4.D组
+	 */
+	@Column(name="teamGroup",length=2 )
+	private int teamGroup;
+	
+	/**
+	 * 身份证号
+	 */
+	@Column(name="idCard",length=32 )
+	private  String idCard;
+	
+	/**
+	 * 联系地址 
+	 */
+	@Column(name="address",length=255 )
+	private String address;
 	
 	
-	
-	
-	
-	
+	/**
+	 *员工使用状态 ,  1.使用 2.停用
+	 */
+	@Column(name="doStatus",length = 2,nullable = false)
+	private int doStatus ;
 	
 	public long getId() {
 		return id;
@@ -128,6 +194,116 @@ public class EmployeeInfo implements  Serializable{
 
 	public CompanyInsideInfo getCompanyInsideInfo() {
 		return companyInsideInfo;
+	}
+
+
+	public DeductGroup getDeductGroup() {
+		return deductGroup;
+	}
+
+
+	public void setDeductGroup(DeductGroup deductGroup) {
+		this.deductGroup = deductGroup;
+	}
+
+
+	public List<PermissionGroup> getPermissionGroups() {
+		return permissionGroups;
+	}
+
+
+	public void setPermissionGroups(List<PermissionGroup> permissionGroups) {
+		this.permissionGroups = permissionGroups;
+	}
+
+
+	public String getDeduct() {
+		return deduct;
+	}
+
+
+	public void setDeduct(String deduct) {
+		this.deduct = deduct;
+	}
+
+
+	public double getSalary() {
+		return salary;
+	}
+
+
+	public void setSalary(double salary) {
+		this.salary = salary;
+	}
+
+
+	public int getEmployeeType() {
+		return employeeType;
+	}
+
+
+	public void setEmployeeType(int employeeType) {
+		this.employeeType = employeeType;
+	}
+
+
+	public String getPhone() {
+		return phone;
+	}
+
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+
+	public String getCall() {
+		return call;
+	}
+
+
+	public void setCall(String call) {
+		this.call = call;
+	}
+
+
+	public int getTeamGroup() {
+		return teamGroup;
+	}
+
+
+	public void setTeamGroup(int teamGroup) {
+		this.teamGroup = teamGroup;
+	}
+
+
+	public String getIdCard() {
+		return idCard;
+	}
+
+
+	public void setIdCard(String idCard) {
+		this.idCard = idCard;
+	}
+
+
+	public String getAddress() {
+		return address;
+	}
+
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+
+	public int getDoStatus() {
+		return doStatus;
+	}
+
+
+	public void setDoStatus(int doStatus) {
+		this.doStatus = doStatus;
 	}
 
 
