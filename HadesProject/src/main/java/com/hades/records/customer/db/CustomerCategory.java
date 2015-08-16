@@ -124,6 +124,14 @@ public class CustomerCategory implements Serializable{
 		this.parentCustomerCategory = parentCustomerCategory;
 	}
 
+	public List<CustomerInfo> getCustomerInfos() {
+		return customerInfos;
+	}
+
+	public void setCustomerInfos(List<CustomerInfo> customerInfos) {
+		this.customerInfos = customerInfos;
+	}
+
 	public Dealer getDealer() {
 		return dealer;
 	}

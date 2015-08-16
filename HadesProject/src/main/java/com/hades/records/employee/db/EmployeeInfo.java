@@ -89,6 +89,12 @@ public class EmployeeInfo implements  Serializable{
 	private List<PermissionGroup> permissionGroups;
 
 	/**
+	 * 按照特定规则 自动生成 编号
+	 */
+	@Column(name = "number" , length = 32 ,nullable = false,unique = true)
+	private String number;
+	
+	/**
 	 * 姓名
 	 */
 	@Column(name="name",length=32 , unique = true,nullable = false)
@@ -189,6 +195,16 @@ public class EmployeeInfo implements  Serializable{
 
 	public void setDealer(Dealer dealer) {
 		this.dealer = dealer;
+	}
+
+
+	public String getNumber() {
+		return number;
+	}
+
+
+	public void setNumber(String number) {
+		this.number = number;
 	}
 
 

@@ -57,6 +57,12 @@ public class User implements Serializable{
 	private Dealer dealer;
 	
 	/**
+	 * 按照特定规则 自动生成 编号
+	 */
+	@Column(name = "number" , length = 32 ,nullable = false,unique = true)
+	private String number;
+	
+	/**
 	 * 用户名
 	 */
 	@Column(name="userName",length=32 , unique = true,nullable = false)
@@ -96,6 +102,12 @@ public class User implements Serializable{
 	
 	
 	
+	public String getNumber() {
+		return number;
+	}
+	public void setNumber(String number) {
+		this.number = number;
+	}
 	public Dealer getDealer() {
 		return dealer;
 	}
